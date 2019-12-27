@@ -3,48 +3,60 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Toolbar Dial Options</title>
+    <title>Toolbar Dial - Settings</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
     <div id="theme" class="DefaultLight">
       <div id="options">
-        <header>Toolbar Dial Options</header>
+        <header><h1>Toolbar Dial - Settings</h1></header>
         <main>
-          <div class="setting-wrapper theme">
-            <div class="setting-label">Appearance:</div>
+          <div class="setting-wrapper">
+            <h2>Wallpapers</h2>
             <div class="setting-option">
-              <div class="theme-button">
-                <button id="defaultLightBtn" aria-label="Light Theme"></button>
-                <div class="theme-name">Light</div>
-              </div>
-              <div class="theme-button">
-                <button id="defaultDarkBtn" aria-label="Dark Theme"></button>
-                <div class="theme-name">Dark</div>
-              </div>
+              <button
+                id="defaultLightBtn"
+                class="theme-button"
+                aria-label="Light Theme"
+              ></button>
+              <button
+                id="defaultDarkBtn"
+                class="theme-button"
+                aria-label="Dark Theme"
+              ></button>
             </div>
           </div>
           <div class="setting-wrapper">
-            <div class="setting-label">Default Folder:</div>
+            <h2>Default Folder</h2>
             <div class="setting-option folder">
               <select id="selectFolder"></select
               ><i class="fas fa-caret-down"></i>
             </div>
           </div>
           <div class="setting-wrapper">
-            <div class="setting-label">Folders:</div>
-            <div class="setting-option folder">
-              <select id="folderTarget">
-                <option value="new">Open bookmarks in new tab</option>
-                <option value="current"
-                  >Open bookmarks in current tab</option
-                ></select
-              ><i class="fas fa-caret-down"></i>
+            <h2>Dial Options</h2>
+            <div class="setting-group">
+              <div class="setting-label">Open bookmarks in new tab</div>
+              <div class="setting-option">
+                <label class="switch-wrap new-tab">
+                  <input type="checkbox" id="folderTarget" />
+                  <div class="switch"></div>
+                </label>
+              </div>
+            </div>
+            <div class="setting-group">
+              <div class="setting-label">Use larger dials</div>
+              <div class="setting-option">
+                <label class="switch-wrap larger-dials">
+                  <input type="checkbox" id="largerDials" />
+                  <div class="switch"></div>
+                </label>
+              </div>
             </div>
           </div>
           <div class="setting-wrapper">
-            <div class="setting-label homepage">Home Page:</div>
-            <div class="setting-option">
+            <h2>Homepage</h2>
+            <div class="setting-description">
               The following URL can been used for the browser's homepage. <br />
               <span id="homepage-url"></span>
             </div>

@@ -27,11 +27,21 @@ function init() {
   }
 
   async function getTarget() {
-    return await browser.storage.local.get({ target: "new" });
+    return await browser.storage.local.get({ new_tab: true });
   }
 
   function setTarget(e) {
-    browser.storage.local.set({ target: e.target.value });
+    browser.storage.local.set({ new_tab: e.target.checked });
+    toggleBodyClass("new-tab", e.target.checked);
+  }
+
+  async function getDialSize() {
+    return await browser.storage.local.get({ larger_dials: true });
+  }
+
+  function setDialSize(e) {
+    browser.storage.local.set({ larger_dials: e.target.checked });
+    toggleBodyClass("larger-dials", e.target.checked);
   }
 
   function updateFolders(defaultFolder) {
@@ -74,8 +84,22 @@ function init() {
     gettingTree.then(logTree, onRejected);
   }
 
-  function updateTarget(target) {
-    folderTarget.value = target;
+  function updateTarget(new_tab) {
+    folderTarget.checked = new_tab;
+    toggleBodyClass("new-tab", new_tab);
+  }
+
+  function updateDialSize(larger_dials) {
+    dialSize.checked = larger_dials;
+    toggleBodyClass("larger-dials", larger_dials);
+  }
+
+  function toggleBodyClass(className, value) {
+    if (value) {
+      document.body.classList.add(className);
+    } else {
+      document.body.classList.remove(className);
+    }
   }
 
   let themeDiv = document.querySelector("#theme");
@@ -84,9 +108,11 @@ function init() {
   let urlDiv = document.querySelector("#homepage-url");
   let selectFolder = document.querySelector("#selectFolder");
   let folderTarget = document.querySelector("#folderTarget");
+  let dialSize = document.querySelector("#largerDials");
   getTheme().then(({ theme }) => (themeDiv.className = theme));
   getFolder().then(({ folder }) => updateFolders(folder));
-  getTarget().then(({ target }) => updateTarget(target));
+  getTarget().then(({ new_tab }) => updateTarget(new_tab));
+  getDialSize().then(({ larger_dials }) => updateDialSize(larger_dials));
   let homeURL = browser.runtime.getURL("dist/index.html");
   urlDiv.innerHTML = `<a href="${homeURL}">${homeURL}</a>`;
 
@@ -94,6 +120,7 @@ function init() {
   darkButton.addEventListener("click", setDarkTheme);
   selectFolder.addEventListener("change", setFolder);
   folderTarget.addEventListener("change", setTarget);
+  dialSize.addEventListener("change", setDialSize);
 }
 
 document.onload = init();
