@@ -32,7 +32,6 @@ function init() {
 
   function setTarget(e) {
     browser.storage.local.set({ new_tab: e.target.checked });
-    toggleBodyClass("new-tab", e.target.checked);
   }
 
   async function getDialSize() {
@@ -41,7 +40,6 @@ function init() {
 
   function setDialSize(e) {
     browser.storage.local.set({ larger_dials: e.target.checked });
-    toggleBodyClass("larger-dials", e.target.checked);
   }
 
   function updateFolders(defaultFolder) {
@@ -86,20 +84,10 @@ function init() {
 
   function updateTarget(new_tab) {
     folderTarget.checked = new_tab;
-    toggleBodyClass("new-tab", new_tab);
   }
 
   function updateDialSize(larger_dials) {
     dialSize.checked = larger_dials;
-    toggleBodyClass("larger-dials", larger_dials);
-  }
-
-  function toggleBodyClass(className, value) {
-    if (value) {
-      document.body.classList.add(className);
-    } else {
-      document.body.classList.remove(className);
-    }
   }
 
   let themeDiv = document.querySelector("#theme");
