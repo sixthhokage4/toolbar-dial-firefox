@@ -51,7 +51,7 @@ main {
 
 h2 {
   font-size: 1rem;
-  margin: 0 0 25px;
+  margin: 0 0 20px;
 }
 
 .setting-label,
@@ -95,11 +95,28 @@ button.theme-button {
   border-radius: 15px;
   border: none;
   cursor: pointer;
+  position: relative;
 }
 
 .DefaultDark #defaultDarkBtn,
 .DefaultLight #defaultLightBtn {
   box-shadow: 0 0 0 2px #29b6f6;
+}
+
+.DefaultDark #defaultDarkBtn::before,
+.DefaultLight #defaultLightBtn::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  content: "\2713";
+  background-color: #29b6f6;
+  color: #fff;
+  height: 24px;
+  width: 24px;
+  padding-top: 3px;
+  margin-left: -12px;
+  margin-top: -12px;
+  border-radius: 50%;
 }
 
 button.theme-button:focus,
@@ -161,7 +178,6 @@ select {
 
 .switch-wrap {
   cursor: pointer;
-  padding: var(--switch-padding);
   width: var(--switch-width);
   height: var(--switch-height);
   display: block;
