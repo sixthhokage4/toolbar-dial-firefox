@@ -21,13 +21,19 @@ let Nav = styled.div(
   })
 );
 
-export default ({ theme, path, currentFolder, changeFolder }) => {
+export default ({
+  theme,
+  path,
+  currentFolder,
+  changeFolder,
+  handleContextMenu
+}) => {
   let handleClick = (e, folder) => {
     e.preventDefault();
     changeFolder(folder);
   };
   return (
-    <Nav {...{ theme }}>
+    <Nav {...{ theme }} onContextMenu={handleContextMenu}>
       {path.map(({ id, title }, index) => (
         <span key={id}>
           {index !== 0 && " / "}

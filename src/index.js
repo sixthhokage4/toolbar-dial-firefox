@@ -4,6 +4,7 @@ import "./styles.css";
 import { css } from "emotion";
 import DefaultTheme from "./themes/default/index.js";
 import filter from "./filter.js";
+import ContextMenu from "./contextMenu.js";
 
 const themes = {
   DefaultLight: DefaultTheme,
@@ -24,7 +25,10 @@ class App extends React.Component {
     theme: "DefaultLight",
     currentFolder: rootFolder,
     folderTarget: "new",
-    path: []
+    path: [],
+    showContextMenu: false,
+    contextMenuX: "",
+    contextMenuY: ""
   };
 
   getDefaultFolder = async () => {
@@ -162,13 +166,52 @@ class App extends React.Component {
     }
   }
 
+  handleContextMenu = e => {
+    if (e.currentTarget && e.currentTarget === e.target) {
+      e.preventDefault();
+      this.setState({
+        showContextMenu: true,
+        contextMenuX: e.clientX,
+        contextMenuY: e.clientY
+      });
+    }
+  };
+
+  hideContextMenu = () => {
+    this.setState({ showContextMenu: false });
+  };
+
+  handleEscape = e => {
+    if (e.key === "Escape") {
+      this.hideContextMenu();
+    }
+  };
+
   render() {
-    let { bookmarks, theme, path, currentFolder, folderTarget } = this.state;
+    let {
+      bookmarks,
+      theme,
+      path,
+      currentFolder,
+      folderTarget,
+      showContextMenu,
+      contextMenuX,
+      contextMenuY
+    } = this.state;
     let noOutline = css({ outline: 0 });
 
     let Theme = themes[theme];
     return (
-      <div ref={this.setFocusRef} tabIndex="-1" class={noOutline}>
+      <div
+        ref={this.setFocusRef}
+        tabIndex="-1"
+        class={noOutline}
+        onClick={this.hideContextMenu}
+        onKeyDown={this.handleEscape}
+      >
+        {showContextMenu && (
+          <ContextMenu {...{ top: contextMenuY, left: contextMenuX }} />
+        )}
         <Theme
           {...{
             bookmarks,
@@ -177,7 +220,8 @@ class App extends React.Component {
             theme,
             changeFolder: this.changeFolder,
             isRoot: currentFolder.id === rootFolder.id,
-            folderTarget
+            folderTarget,
+            handleContextMenu: this.handleContextMenu
           }}
         />
       </div>

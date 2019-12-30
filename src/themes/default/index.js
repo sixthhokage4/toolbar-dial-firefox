@@ -13,13 +13,16 @@ export default ({
   theme,
   isRoot,
   changeFolder,
-  folderTarget
+  folderTarget,
+  handleContextMenu
 }) => (
-  <Theme {...{ theme }}>
+  <Theme {...{ theme }} onContextMenu={handleContextMenu}>
     {!isRoot && (
-      <Breadcrumbs {...{ theme, path, currentFolder, changeFolder }} />
+      <Breadcrumbs
+        {...{ theme, path, currentFolder, changeFolder, handleContextMenu }}
+      />
     )}
-    <Grid {...{ currentFolder, isRoot }}>
+    <Grid {...{ currentFolder, isRoot }} onContextMenu={handleContextMenu}>
       {bookmarks.map(({ title, url, type, name, id }) => (
         <Fragment key={id}>
           <Link
