@@ -14,6 +14,7 @@ let FileLink = ({ url, title, children, isRoot, folderTarget }) => (
     class={style}
     title={title}
     target={isRoot || folderTarget === "current" ? "_self" : "_blank"}
+    onContextMenu={e => e.stopPropagation()}
   >
     {children}
   </a>
@@ -29,7 +30,13 @@ let FolderLink = ({ children, id, title, currentFolder, changeFolder }) => {
   };
 
   return (
-    <a href={id} class={style} title={`${title} Folder`} onClick={handleClick}>
+    <a
+      href={id}
+      class={style}
+      title={`${title} Folder`}
+      onClick={handleClick}
+      onContextMenu={e => e.stopPropagation()}
+    >
       {children}
     </a>
   );

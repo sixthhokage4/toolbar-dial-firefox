@@ -167,14 +167,12 @@ class App extends React.Component {
   }
 
   handleContextMenu = e => {
-    if (e.currentTarget && e.currentTarget === e.target) {
-      e.preventDefault();
-      this.setState({
-        showContextMenu: true,
-        contextMenuX: e.clientX,
-        contextMenuY: e.clientY
-      });
-    }
+    e.preventDefault();
+    this.setState({
+      showContextMenu: true,
+      contextMenuX: e.pageX,
+      contextMenuY: e.pageY
+    });
   };
 
   hideContextMenu = () => {
@@ -208,6 +206,7 @@ class App extends React.Component {
         class={noOutline}
         onClick={this.hideContextMenu}
         onKeyDown={this.handleEscape}
+        onContextMenu={this.handleContextMenu}
       >
         {showContextMenu && (
           <ContextMenu {...{ top: contextMenuY, left: contextMenuX }} />
@@ -220,8 +219,7 @@ class App extends React.Component {
             theme,
             changeFolder: this.changeFolder,
             isRoot: currentFolder.id === rootFolder.id,
-            folderTarget,
-            handleContextMenu: this.handleContextMenu
+            folderTarget
           }}
         />
       </div>
