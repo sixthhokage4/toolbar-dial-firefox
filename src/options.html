@@ -7,63 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
-    <div id="theme" class="DefaultLight">
-      <div id="options">
-        <header><h1>Toolbar Dial - Settings</h1></header>
-        <main>
-          <div class="setting-wrapper">
-            <h2>Wallpapers</h2>
-            <div class="setting-option">
-              <button
-                id="defaultLightBtn"
-                class="theme-button"
-                aria-label="Light Theme"
-              ></button>
-              <button
-                id="defaultDarkBtn"
-                class="theme-button"
-                aria-label="Dark Theme"
-              ></button>
-            </div>
-          </div>
-          <div class="setting-wrapper">
-            <h2>Default Folder</h2>
-            <div class="setting-option folder">
-              <select id="selectFolder"></select
-              ><i class="fas fa-caret-down"></i>
-            </div>
-          </div>
-          <div class="setting-wrapper">
-            <h2>Dial Options</h2>
-            <div class="setting-group">
-              <div class="setting-label">Open bookmarks in new tab</div>
-              <div class="setting-option">
-                <label class="switch-wrap">
-                  <input type="checkbox" id="folderTarget" />
-                  <div class="switch"></div>
-                </label>
-              </div>
-            </div>
-            <div class="setting-group">
-              <div class="setting-label">Use larger dials</div>
-              <div class="setting-option">
-                <label class="switch-wrap">
-                  <input type="checkbox" id="largerDials" />
-                  <div class="switch"></div>
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="setting-wrapper">
-            <h2>Homepage</h2>
-            <div class="setting-description">
-              The following URL can been used for the browser's homepage. <br />
-              <span id="homepage-url"></span>
-            </div>
-          </div>
-        </main>
-      </div>
-    </div>
+    <div id="app"></div>
     <script src="./options.js"></script>
   </body>
 </html>
