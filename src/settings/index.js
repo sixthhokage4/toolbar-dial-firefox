@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useOptions } from "../hooks/useOptions.js";
 import { styles } from "./styles.js";
 //import { useBookmarks } from "../hooks/useBookmarks.js";
@@ -7,6 +7,7 @@ import { wallpaperStyles } from "../wallpapers/styles.js";
 import { css } from "emotion";
 
 export const Settings = () => {
+  const [folders, setFolders] = useState([]);
   //const { folders } = useBookmarks();
   const {
     appearance,
@@ -25,6 +26,7 @@ export const Settings = () => {
 
   useEffect(() => {
     document.title = "Toolbar Dial - Settings";
+    getFolders();
   }, []);
 
   const homeURL = browser.runtime.getURL("dist/index.html");
@@ -48,6 +50,45 @@ export const Settings = () => {
       ></button>
     )
   );
+
+  function getFolders() {
+    let folders = [];
+
+    function addFolder(id, title) {
+      folders.push({ id, title });
+    }
+
+    function makeIndent(indentLength) {
+      return "\u00A0\u00A0".repeat(indentLength);
+    }
+
+    function logItems(bookmarkItem, indent) {
+      if (bookmarkItem.type === "folder") {
+        if (bookmarkItem.id !== "root________") {
+          addFolder(
+            bookmarkItem.id,
+            `${makeIndent(indent)}${bookmarkItem.title}`
+          );
+          indent++;
+        }
+        if (bookmarkItem.children) {
+          bookmarkItem.children.forEach(child => logItems(child, indent));
+        }
+      }
+    }
+
+    function logTree(bookmarkItems) {
+      logItems(bookmarkItems[0], 0);
+      setFolders(folders);
+    }
+
+    function onRejected(error) {
+      console.log(`An error: ${error}`);
+    }
+
+    var gettingTree = browser.bookmarks.getTree();
+    gettingTree.then(logTree, onRejected);
+  }
 
   return (
     <div
@@ -95,7 +136,13 @@ export const Settings = () => {
             <div className="setting-wrapper">
               <h2>Default Folder</h2>
               <div className="setting-option folder">
-                <select id="selectFolder"></select>
+                <select id="selectFolder">
+                  {folders.map(({ id, title }) => (
+                    <option selected={id === defaultFolder ? true : false}>
+                      {title}
+                    </option>
+                  ))}
+                </select>
                 <i className="fas fa-caret-down"></i>
               </div>
             </div>
@@ -165,7 +212,7 @@ export const Settings = () => {
                 </a>
                 . Please report any bugs or issues to the{" "}
                 <a
-                  href="https://github.com/lucaseverett/toolbar-dial-web"
+                  href="https://github.com/lucaseverett/toolbar-dial-firefox/"
                   rel="noopener"
                   target="_blank"
                 >
