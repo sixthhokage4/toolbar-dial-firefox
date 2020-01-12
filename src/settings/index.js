@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useOptions } from "../hooks/useOptions.js";
 import { styles } from "./styles.js";
-//import { useBookmarks } from "../hooks/useBookmarks.js";
+import { useBookmarks } from "../hooks/useBookmarks.js";
 import { wallpapers } from "../wallpapers";
 import { wallpaperStyles } from "../wallpapers/styles.js";
 import { css } from "emotion";
 
 export const Settings = () => {
-  const [folders, setFolders] = useState([]);
-  //const { folders } = useBookmarks();
+  const { folders } = useBookmarks();
   const {
     appearance,
     newTab,
@@ -26,7 +25,6 @@ export const Settings = () => {
 
   useEffect(() => {
     document.title = "Toolbar Dial - Settings";
-    getFolders();
   }, []);
 
   const homeURL = browser.runtime.getURL("dist/index.html");
@@ -50,45 +48,6 @@ export const Settings = () => {
       ></button>
     )
   );
-
-  function getFolders() {
-    let folders = [];
-
-    function addFolder(id, title) {
-      folders.push({ id, title });
-    }
-
-    function makeIndent(indentLength) {
-      return "\u00A0\u00A0".repeat(indentLength);
-    }
-
-    function logItems(bookmarkItem, indent) {
-      if (bookmarkItem.type === "folder") {
-        if (bookmarkItem.id !== "root________") {
-          addFolder(
-            bookmarkItem.id,
-            `${makeIndent(indent)}${bookmarkItem.title}`
-          );
-          indent++;
-        }
-        if (bookmarkItem.children) {
-          bookmarkItem.children.forEach(child => logItems(child, indent));
-        }
-      }
-    }
-
-    function logTree(bookmarkItems) {
-      logItems(bookmarkItems[0], 0);
-      setFolders(folders);
-    }
-
-    function onRejected(error) {
-      console.log(`An error: ${error}`);
-    }
-
-    var gettingTree = browser.bookmarks.getTree();
-    gettingTree.then(logTree, onRejected);
-  }
 
   return (
     <div

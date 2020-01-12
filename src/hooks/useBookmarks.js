@@ -5,9 +5,6 @@ import { useOptions } from "./useOptions.js";
 const rootTitle = "Bookmarks";
 
 function useBookmarks() {
-  const auth = useAuth();
-  const user = auth.user;
-  const database = auth.database;
   const { defaultFolder } = useOptions();
 
   const [bookmarks, setBookmarks] = useState([]);
@@ -20,23 +17,10 @@ function useBookmarks() {
     bookmarks: [],
     folders: []
   });
+  const [folders, setFolders] = useState([]);
 
   useEffect(() => {
-    let bookmarksRef =
-      process.env.NODE_ENV === "development"
-        ? `dev/${user.uid}/`
-        : `users/${user.uid}/`;
-    bookmarksRef = database().ref(bookmarksRef);
-    bookmarksRef.on("value", snap => {
-      if (snap.val()) {
-        updateBookmarks({
-          fbBookmarks: snap.val()["bookmarks"],
-          fbFolders: snap.val()["folders"]
-        });
-      } else {
-        updateBookmarks({});
-      }
-    });
+    getFolders();
   }, []);
 
   // Default folder has been changed in Options
@@ -48,66 +32,57 @@ function useBookmarks() {
     setPath([]);
   }, [defaultFolder]);
 
-  function updateBookmarks({ fbBookmarks = [], fbFolders = [] }) {
-    setBookmarks(getBookmarks(currentFolder, fbBookmarks, fbFolders));
-    setAllBookmarks({
-      bookmarks: fbBookmarks,
-      folders: fbFolders
-    });
-  }
+  function updateBookmarks() {}
 
-  function getBookmarks(folder, bookmarks, folders) {
-    folders = Object.keys(folders)
-      .map(key => ({
-        id: key,
-        title: folders[key]["title"],
-        url: "",
-        parentID: folders[key]["parentID"] || defaultFolder
-      }))
-      .filter(({ parentID = defaultFolder }) => parentID === folder.id);
+  function getBookmarks(folder, bookmarks, folders) {}
 
-    bookmarks = Object.keys(bookmarks)
-      .map(key => ({
-        id: key,
-        ...bookmarks[key]
-      }))
-      .filter(({ parentID = defaultFolder }) => parentID === folder.id);
+  function getFolders() {
+    let folders = [];
 
-    let sort = (a, b) => {
-      let titleA = a.title.toUpperCase();
-      let titleB = b.title.toUpperCase();
-      if (titleA < titleB) {
-        return -1;
-      }
-      if (titleA > titleB) {
-        return 1;
-      }
-      return 0;
-    };
-
-    return filter([...folders.sort(sort), ...bookmarks.sort(sort)]);
-  }
-
-  function getFolders() {}
-
-  function changeFolder({ currentFolder = "", nextFolder }) {
-    setBookmarks(
-      getBookmarks(nextFolder, allBookmarks.bookmarks, allBookmarks.folders)
-    );
-    if (currentFolder) {
-      setPath([...path, currentFolder]);
-    } else {
-      setPath(path.slice(0, path.map(({ id }) => id).indexOf(nextFolder.id)));
+    function addFolder(id, title) {
+      folders.push({ id, title });
     }
-    setCurrentFolder(nextFolder);
+
+    function makeIndent(indentLength) {
+      return "\u00A0\u00A0".repeat(indentLength);
+    }
+
+    function logItems(bookmarkItem, indent) {
+      if (bookmarkItem.type === "folder") {
+        if (bookmarkItem.id !== "root________") {
+          addFolder(
+            bookmarkItem.id,
+            `${makeIndent(indent)}${bookmarkItem.title}`
+          );
+          indent++;
+        }
+        if (bookmarkItem.children) {
+          bookmarkItem.children.forEach(child => logItems(child, indent));
+        }
+      }
+    }
+
+    function logTree(bookmarkItems) {
+      logItems(bookmarkItems[0], 0);
+      setFolders(folders);
+    }
+
+    function onRejected(error) {
+      console.log(`An error: ${error}`);
+    }
+
+    var gettingTree = browser.bookmarks.getTree();
+    gettingTree.then(logTree, onRejected);
   }
+
+  function changeFolder({ currentFolder = "", nextFolder }) {}
 
   return {
     bookmarks,
     currentFolder,
     changeFolder,
     path,
-    folders: getFolders()
+    folders
   };
 }
 
