@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { filter } from "./filter.js";
 import { useOptions } from "./useOptions.js";
 
@@ -8,34 +8,57 @@ function useBookmarks() {
   const { defaultFolder } = useOptions();
 
   const [bookmarks, setBookmarks] = useState([]);
-  const [currentFolder, setCurrentFolder] = useState({
-    id: defaultFolder,
-    title: rootTitle
-  });
+  const [currentFolder, setCurrentFolder] = useState({});
   const [path, setPath] = useState([]);
   const [folders, setFolders] = useState([]);
 
+  const currentFolderRef = useRef();
+
   useEffect(() => {
     getFolders();
+    browser.bookmarks.onChanged.addListener(updateBookmarks);
+    browser.bookmarks.onCreated.addListener(updateBookmarks);
+    browser.bookmarks.onMoved.addListener(updateBookmarks);
+    browser.bookmarks.onRemoved.addListener(updateBookmarks);
+    return () => {
+      browser.bookmarks.onChanged.removeListener(updateBookmarks);
+      browser.bookmarks.onCreated.removeListener(updateBookmarks);
+      browser.bookmarks.onMoved.removeListener(updateBookmarks);
+      browser.bookmarks.onRemoved.removeListener(updateBookmarks);
+    };
   }, []);
 
   // Default folder has been changed in Options
   useEffect(() => {
-    setCurrentFolder({
-      id: defaultFolder,
-      title: rootTitle
-    });
-    setPath([]);
+    initialBookmarks();
+  }, [defaultFolder]);
+
+  useEffect(() => {
+    currentFolderRef.current = currentFolder;
+  }, [currentFolder]);
+
+  function initialBookmarks() {
     if (defaultFolder) {
+      setCurrentFolder({
+        id: defaultFolder,
+        title: rootTitle
+      });
+      setPath([]);
       getBookmarks(defaultFolder).then(bookmarks => {
         if (bookmarks) {
           setBookmarks(bookmarks);
         }
       });
     }
-  }, [defaultFolder]);
+  }
 
-  function updateBookmarks() {}
+  function updateBookmarks() {
+    getBookmarks(currentFolderRef.current.id).then(bookmarks => {
+      if (bookmarks) {
+        setBookmarks(bookmarks);
+      }
+    });
+  }
 
   async function getBookmarks(folder) {
     let bookmarks = [];
