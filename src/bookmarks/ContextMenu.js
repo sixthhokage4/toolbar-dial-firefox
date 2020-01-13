@@ -1,16 +1,7 @@
 import React from "react";
 import { css } from "emotion";
-import { useAuth } from "../hooks/useAuth.js";
-import { Link } from "react-router-dom";
 
 export const ContextMenu = ({ top, left }) => {
-  const auth = useAuth();
-  const signout = auth.signout;
-
-  function handleSignOut() {
-    signout();
-  }
-
   return (
     <div
       className={css`
@@ -45,12 +36,9 @@ export const ContextMenu = ({ top, left }) => {
     >
       <ul>
         <li>
-          <Link to="/settings" target="_blank">
+          <a href="/dist/options.html" target="_blank">
             Change Wallpaper
-          </Link>
-        </li>
-        <li>
-          <a onClick={handleSignOut}>Logout</a>
+          </a>
         </li>
       </ul>
     </div>

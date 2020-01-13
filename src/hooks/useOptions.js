@@ -59,7 +59,7 @@ export function ProvideOptions({ children }) {
   useEffect(() => {
     browser.storage.local
       .get({ appearance: "light-appearance" })
-      .then(({ folder }) => setFolder(folder));
+      .then(({ appearance }) => setAppearance(appearance));
 
     browser.storage.local
       .get({ wallpaper: "light-wallpaper" })

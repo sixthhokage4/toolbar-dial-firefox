@@ -13,10 +13,6 @@ function useBookmarks() {
     title: rootTitle
   });
   const [path, setPath] = useState([]);
-  const [allBookmarks, setAllBookmarks] = useState({
-    bookmarks: [],
-    folders: []
-  });
   const [folders, setFolders] = useState([]);
 
   useEffect(() => {
@@ -30,11 +26,39 @@ function useBookmarks() {
       title: rootTitle
     });
     setPath([]);
+    if (defaultFolder) {
+      getBookmarks(defaultFolder).then(bookmarks => {
+        if (bookmarks) {
+          setBookmarks(bookmarks);
+        }
+      });
+    }
   }, [defaultFolder]);
 
   function updateBookmarks() {}
 
-  function getBookmarks(folder, bookmarks, folders) {}
+  async function getBookmarks(folder) {
+    let bookmarks = [];
+    let sort = (a, b) => a.index - b.index;
+    try {
+      bookmarks = await browser.bookmarks.getChildren(folder);
+    } catch (e) {
+      console.log(e);
+    }
+    return filter(bookmarks).sort(sort);
+  }
+
+  function changeFolder({ currentFolder = "", nextFolder }) {
+    getBookmarks(nextFolder.id).then(bookmarks => {
+      setBookmarks(bookmarks);
+      if (currentFolder) {
+        setPath([...path, currentFolder]);
+      } else {
+        setPath(path.slice(0, path.map(({ id }) => id).indexOf(nextFolder.id)));
+      }
+      setCurrentFolder(nextFolder);
+    });
+  }
 
   function getFolders() {
     let folders = [];
@@ -74,8 +98,6 @@ function useBookmarks() {
     var gettingTree = browser.bookmarks.getTree();
     gettingTree.then(logTree, onRejected);
   }
-
-  function changeFolder({ currentFolder = "", nextFolder }) {}
 
   return {
     bookmarks,

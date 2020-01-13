@@ -23,10 +23,6 @@ export const Settings = () => {
     handleFullWidth
   } = useOptions();
 
-  useEffect(() => {
-    document.title = "Toolbar Dial - Settings";
-  }, []);
-
   const homeURL = browser.runtime.getURL("dist/index.html");
 
   const wallpapersList = wallpapers.map(

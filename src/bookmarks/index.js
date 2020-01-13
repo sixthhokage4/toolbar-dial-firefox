@@ -15,11 +15,7 @@ window.onscroll = () => {
 
 let menuCoords = { x: 0, y: 0 };
 
-function App() {
-  useEffect(() => {
-    document.title = "Toolbar Dial - Bookmarks";
-  }, []);
-
+export function Bookmarks() {
   const { bookmarks, currentFolder, changeFolder, path } = useBookmarks();
   const {
     appearance,
@@ -105,5 +101,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
